@@ -5,8 +5,8 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
-
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+ "before_install":
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 jdk:
   - oraclejdk8
