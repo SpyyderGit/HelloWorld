@@ -1,24 +1,19 @@
 
 language: java
 sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 
-env:
-  - NODE_VERSION=4
+mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
-cache:
-  yarn: true
-  directories:
-    - $HOME/.m2
-
-before_install:
-  - 'if [[ -n "$DECRYPT_KEYPHRASE" ]]; then openssl aes-256-cbc -d -pass "env:DECRYPT_KEYPHRASE" -in .gnupg.tar.enc | tar xv; fi'
-  - 'if [[ ${TRAVIS_TAG} != "" ]]; then ./mvnw versions:set -DnewVersion="${TRAVIS_TAG}"; fi'
-  - 'nvm install ${NODE_VERSION} && nvm use ${NODE_VERSION}'
-  - 'npm install -g yarn'
-
-script: ./mvnw clean verify
-
-after_success:
-  - ./mvnw jacoco:report coveralls:report
-  - "[[ ${TRAVIS_PULL_REQUEST} == 'false' ]] && [[ ${TRAVIS_TAG} == '' ]] && ./mvnw deploy -DreposityId=sonatype-nexus-snapshots -DskipTests --settings deploy-settings.xml"
-  - "[[ ${TRAVIS_PULL_REQUEST} == 'false' ]] && [[ ${TRAVIS_TAG} != '' ]] && ./mvnw deploy -DreposityId=sonatype-nexus-staging -DskipTests --settings deploy-settings.xml"
+jdk:
+  - oraclejdk8
+  
+ script:
+  - jdk_switcher use oraclejdk8
+  - # do stuff with Java 8
+  - jdk_switcher use oraclejdk7
+  - # do stuff with Java 7 
+  
